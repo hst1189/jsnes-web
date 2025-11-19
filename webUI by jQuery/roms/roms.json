@@ -1,0 +1,36 @@
+{
+    "魂斗罗": {
+        "魂斗罗1(U)30": "roms/Contra/Contra1(U)30.nes",
+        "魂斗罗1(U)30F": "roms/Contra/Contra1(U)30F.nes",
+        "魂斗罗1(U)30L": "roms/Contra/Contra1(U)30L.nes",
+        "魂斗罗1(U)30M": "roms/Contra/Contra1(U)30M.nes",
+        "魂斗罗1(U)30S": "roms/Contra/Contra1(U)30S.nes",
+        "魂斗罗1(U)F": "roms/Contra/Contra1(U)F.nes",
+        "魂斗罗1(U)L": "roms/Contra/Contra1(U)L.nes",
+        "魂斗罗1(U)M": "roms/Contra/Contra1(U)M.nes",
+        "魂斗罗1(U)S": "roms/Contra/Contra1(U)S.nes"
+    },
+    "双截龙": {
+        "双截龙1 Double Dragon1": "roms/Double Dragon/Double Dragon1.nes",
+        "双截龙2 Double Dragon2": "roms/Double Dragon/Double Dragon2.nes",
+        "双截龙3 Double Dragon3": "roms/Double Dragon/Double Dragon3.nes",
+        "双截龙4 Double Dragon4": "roms/Double Dragon/Double Dragon4.nes"
+    },
+    "超级玛丽": {
+        "超级马里奥1 (W) Super Mario Bros.": "roms/Mario/(W) Super Mario Bros.nes",
+        "超级马里奥3 (W) Super Mario Bros. 3 (U)": "roms/Mario/Super Mario Bros. 3 (U) (PRG1).nes",
+        "马里奥拆屋工 (W) Wrecking Crew": "roms/Mario/(W) Wrecking Crew.nes",
+        "马里奥医生 Dr. Mario (JU)": "roms/Mario/Dr. Mario (JU).nes"
+    },
+    "经典": {
+        "纽约大拳猫": "roms/RockinCats.nes",
+        "赤影战士 Kage": "roms/Kage.nes",
+        "中国象棋": "roms/Zhong Guo Xiang Qi.nes",
+        "吃豆精灵 (J) (V1.1) Pac-Man": "roms/Pac-Man.nes",
+        "沙罗曼蛇 (U) Life Force": "roms/Life Force.nes",
+        "1943 (U) 1943 - The Battle of Midway": "roms/1943.nes",
+        "脱狱 Cross Fire (J)": "roms/Cross Fire (J).nes",
+        "撞球咖啡馆 Shufflepuck Cafe": "roms/Shufflepuck Cafe.nes",
+        "功夫 (J) (V1.2) Yie Ar Kung-Fu": "roms/(J) (V1.2) Yie Ar Ku.nes"
+    }
+}
