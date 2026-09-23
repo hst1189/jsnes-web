@@ -35,8 +35,9 @@ if (typeof jQuery !== 'undefined') {
                 /*
                  * Create UI
                  */
-                self.status = $('<p class="nes-status">Booting up...</p>').appendTo(self.root);
+                // root 必须先创建，否则 status 会 append 到未定义的 root 上变成孤儿元素
                 self.root = $('<div class="nes-root"></div>');
+                self.status = $('<p class="nes-status">Booting up...</p>').appendTo(self.root);
                 self.screen = $('<canvas class="nes-screen"  width="256" height="240"></canvas>').appendTo(self.root);
 
                 if (!self.screen[0].getContext) {
@@ -405,110 +406,47 @@ if (typeof jQuery !== 'undefined') {
                     });
                 });
 
-                $('#joystick_btn_up').bind('touchstart', function (e) {
-                    self.nes.keyboard.keyDown({
-                        keyCode: 87
-                    });
-                    e.preventDefault();
+                /*
+                 * 屏幕按键：同时支持触摸和鼠标
+                 * 按下 = 按键生效；抬起或移出按钮 = 释放按键
+                 * 按下过才允许释放，避免鼠标只是划过按钮时误释放键盘按键
+                 */
+                function bindButton(selector, keyCode) {
+                    var $btn = $(selector);
 
-                });
-                $('#joystick_btn_up').bind('touchend', function (e) {
-                    self.nes.keyboard.keyUp({
-                        keyCode: 87
-                    });
-                    e.preventDefault();
-                });
-                $('#joystick_btn_down').bind('touchstart', function (e) {
-                    self.nes.keyboard.keyDown({
-                        keyCode: 83
-                    });
-                    e.preventDefault();
-                });
-                $('#joystick_btn_down').bind('touchend', function (e) {
-                    self.nes.keyboard.keyUp({
-                        keyCode: 83
-                    });
-                    e.preventDefault();
-                });
-                $('#joystick_btn_left').bind('touchstart', function (e) {
-                    self.nes.keyboard.keyDown({
-                        keyCode: 65
-                    });
-                    e.preventDefault();
-                });
-                $('#joystick_btn_left').bind('touchend', function (e) {
-                    self.nes.keyboard.keyUp({
-                        keyCode: 65
-                    });
-                    e.preventDefault();
-                });
-                $('#joystick_btn_right').bind('touchstart', function (e) {
-                    console.log("right");
-                    self.nes.keyboard.keyDown({
-                        keyCode: 68
-                    });
-                    e.preventDefault();
-                });
-                $('#joystick_btn_right').bind('touchend', function (e) {
-                    self.nes.keyboard.keyUp({
-                        keyCode: 68
-                    });
-                    e.preventDefault();
-                });
-                $('#joystick_btn_A').bind('touchstart', function (e) {
-                    console.log("a");
-                    self.nes.keyboard.keyDown({
-                        keyCode: 74
-                    });
-                    e.preventDefault();
-                });
-                $('#joystick_btn_A').bind('touchend', function (e) {
-                    self.nes.keyboard.keyUp({
-                        keyCode: 74
-                    });
-                    e.preventDefault();
-                });
-                $('#joystick_btn_B').bind('touchstart', function (e) {
-                    console.log("b");
-                    self.nes.keyboard.keyDown({
-                        keyCode: 75
-                    });
-                    e.preventDefault();
-                });
-                $('#joystick_btn_B').bind('touchend', function (e) {
-                    self.nes.keyboard.keyUp({
-                        keyCode: 75
-                    });
-                    e.preventDefault();
-                });
-                $('#joystick_btn_select').bind('touchstart', function (e) {
-                    self.nes.keyboard.keyDown({
-                        keyCode: 32
-                    });
-                    $('#joystick_btn_select').addClass('active');
-                    e.preventDefault();
-                });
-                $('#joystick_btn_select').bind('touchend', function (e) {
-                    self.nes.keyboard.keyUp({
-                        keyCode: 32
-                    });
-                    $('#joystick_btn_select').removeClass('active');
-                    e.preventDefault();
-                });
-                $('#joystick_btn_start').bind('touchstart', function (e) {
-                    self.nes.keyboard.keyDown({
-                        keyCode: 13
-                    });
-                    $('#joystick_btn_start').addClass('active');
-                    e.preventDefault();
-                });
-                $('#joystick_btn_start').bind('touchend', function (e) {
-                    self.nes.keyboard.keyUp({
-                        keyCode: 13
-                    });
-                    $('#joystick_btn_start').removeClass('active');
-                    e.preventDefault();
-                });
+                    function press(e) {
+                        $btn.data('pressed', true).addClass('active');
+                        self.nes.keyboard.keyDown({
+                            keyCode: keyCode
+                        });
+                        e.preventDefault();
+                    }
+
+                    function release(e) {
+                        if (!$btn.data('pressed')) {
+                            return;
+                        }
+                        $btn.data('pressed', false).removeClass('active');
+                        self.nes.keyboard.keyUp({
+                            keyCode: keyCode
+                        });
+                        e.preventDefault();
+                    }
+
+                    $btn.bind('touchstart', press);
+                    $btn.bind('touchend', release);
+                    $btn.bind('mousedown', press);
+                    $btn.bind('mouseup mouseleave', release);
+                }
+
+                bindButton('#joystick_btn_up', 87);      // W
+                bindButton('#joystick_btn_down', 83);     // S
+                bindButton('#joystick_btn_left', 65);     // A
+                bindButton('#joystick_btn_right', 68);    // D
+                bindButton('#joystick_btn_A', 74);        // J
+                bindButton('#joystick_btn_B', 75);        // K
+                bindButton('#joystick_btn_select', 32);   // Space
+                bindButton('#joystick_btn_start', 13);    // Enter
 
                 $('#controls-fire').bind('touchstart', function (e) {
                     handleFire(e);

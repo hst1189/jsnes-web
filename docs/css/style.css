@@ -382,6 +382,13 @@ button.left.joydirection {
     background-color: #ffffff;
 }
 
+/* 屏幕按键按下反馈（触摸/鼠标通用），.active 由 ui.js 维护 */
+button.joydirection.active,
+button.joybtn.active {
+    opacity: 0.6;
+    box-shadow: inset 0 0 0 3px rgba(255, 255, 255, 0.9);
+}
+
 @media screen and (orientation: portrait) {
 
     /*竖屏 css*/

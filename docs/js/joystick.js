@@ -47,7 +47,9 @@ Joystick.prototype.init = function(){
         me.onEnd && me.onEnd()
     })
     //阻止默认事件，防止快速点击时页面缩放
-    document.querySelector(me.el).addEventListener('touchstart',function(evt){
+    //el 可能是选择器字符串，也可能是元素本身（传元素时不能直接交给 querySelector）
+    var zone = (typeof me.el === 'string') ? document.querySelector(me.el) : me.el;
+    zone && zone.addEventListener('touchstart', function (evt) {
         evt.preventDefault()
     })
 }
