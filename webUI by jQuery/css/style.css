@@ -134,6 +134,16 @@ body {
     cursor: pointer;
 }
 
+/* nipplejs 会往 #controls-rocker 里插入 z-index:999 的 .nipple 容器，
+   盖住 z-index:1 的方向按钮，导致触摸/点击全部命中摇杆圆盘、
+   方向按钮自己的 press/release 永远不触发（手机上方向键失灵的根源）。
+   isolation 把摇杆限制在自己的层叠上下文内，按钮重新成为命中目标；
+   它不改变包含块，所以布局和摇杆圆盘的位置都不变。 */
+#controls-rocker {
+    isolation: isolate;
+    touch-action: none;
+}
+
 .controller button {
     position: absolute;
     z-index: 1;
@@ -148,6 +158,9 @@ body {
     left: 50%;
     top: 50%;
     user-select: none;
+    /* 方向按钮不再经过摇杆的 preventDefault，改用声明式规则
+       阻止快速连点触发页面缩放（主线程繁忙时依然生效） */
+    touch-action: none;
     transform: translate(-50%, -50%);
 }
 

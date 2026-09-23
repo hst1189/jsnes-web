@@ -408,7 +408,7 @@ if (typeof jQuery !== 'undefined') {
 
                 /*
                  * 屏幕按键：同时支持触摸和鼠标
-                 * 按下 = 按键生效；抬起或移出按钮 = 释放按键
+                 * 按下 = 按键生效；抬起、移出按钮或触摸被系统打断(touchcancel) = 释放按键
                  * 按下过才允许释放，避免鼠标只是划过按钮时误释放键盘按键
                  */
                 function bindButton(selector, keyCode) {
@@ -434,7 +434,8 @@ if (typeof jQuery !== 'undefined') {
                     }
 
                     $btn.bind('touchstart', press);
-                    $btn.bind('touchend', release);
+                    // touchcancel：手指被系统手势（来电、边缘返回等）打断时也要释放，防止按键卡住
+                    $btn.bind('touchend touchcancel', release);
                     $btn.bind('mousedown', press);
                     $btn.bind('mouseup mouseleave', release);
                 }
