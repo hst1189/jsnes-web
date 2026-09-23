@@ -28,10 +28,10 @@
                 <div class="controller">
                     <div id="controls-direction">
                         <div id="controls-rocker"></div>
-                        <button role="BUTTON_UP" class="up joydirection" id="joystick_btn_up">up</button>
-                        <button role="BUTTON_RIGHT" class="right joydirection" id="joystick_btn_right">right</button>
-                        <button role="BUTTON_DOWN" class="down joydirection" id="joystick_btn_down">down</button>
-                        <button role="BUTTON_LEFT" class="left joydirection" id="joystick_btn_left">left</button>
+                        <button data-button="up" class="up joydirection" id="joystick_btn_up">up</button>
+                        <button data-button="right" class="right joydirection" id="joystick_btn_right">right</button>
+                        <button data-button="down" class="down joydirection" id="joystick_btn_down">down</button>
+                        <button data-button="left" class="left joydirection" id="joystick_btn_left">left</button>
                     </div>
                 </div>
                 <div class="joy">I</div>
@@ -43,16 +43,16 @@
                 </div>
                 <div class="function">
                     <button class="controls-center-select joybtn" id="joystick_btn_select"
-                        role="BUTTON_SELECT">Select</button>
+                        data-button="select">Select</button>
                     <button class="controls-center-start joybtn" id="joystick_btn_start"
-                        role="BUTTON_START">Pause</button>
+                        data-button="start">Pause</button>
                 </div>
             </div>
             <div class="action-area">
                 <div class="action">
                     <div id="controls-fire">
-                        <button class="a joybtn" role="BUTTON_A" id="joystick_btn_A">A</button>
-                        <button class="b joybtn" role="BUTTON_B" id="joystick_btn_B">B</button>
+                        <button class="a joybtn" data-button="a" id="joystick_btn_A">A</button>
+                        <button class="b joybtn" data-button="b" id="joystick_btn_B">B</button>
                     </div>
                 </div>
             </div>
@@ -123,9 +123,8 @@
     </div>
 
 
-    <script src="./js/jquery-1.4.2.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="./js/jquery-3.7.1.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="./js/dynamicaudio-min.js" type="text/javascript" charset="utf-8"></script>
-    <!--<script src="./lib/debug.mini.js" type="text/javascript" charset="utf-8"></script>-->
     <script src="./js/nipplejs.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="./js/joystick.js" type="text/javascript" charset="utf-8"></script>
     <script src="./js/nes.js" type="text/javascript" charset="utf-8"></script>
@@ -139,23 +138,25 @@
     <script src="./js/ui.js" type="text/javascript" charset="utf-8"></script>
 
     <script type="text/javascript" charset="utf-8">
+        // 模拟器实例挂到 window 上，供下面摇杆的按键回调使用
+        window.nes = null;
+
         $(function () {
-            try {
-                fetch('./roms/roms.json')
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log(data);
-                        var nes = new JSNES({ 'ui': $('#emulator').JSNESUI(data) });
-                    });
-            } catch (error) {
-                console.err(error);
-            }
+            fetch('./roms/roms.json')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('HTTP ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    window.nes = new JSNES({ 'ui': $('#emulator').JSNESUI(data) });
+                })
+                .catch(error => {
+                    console.error('加载 roms.json 失败:', error);
+                });
         });
     </script>
-
-    <!--[if IE]>
-    <script type="text/vbscript" src="jsnes-ie-hacks.vbscript"></script>
-    <![endif]-->
 
     <script>
 
@@ -166,13 +167,15 @@
         })
 
         function touchDwon(evt) {
-            nes.keyboard.keyDown({
+            if (!window.nes) return;
+            window.nes.keyboard.keyDown({
                 keyCode: evt.keyCode
             });
         };
 
         function touchUp(evt) {
-            nes.keyboard.keyUp({
+            if (!window.nes) return;
+            window.nes.keyboard.keyUp({
                 keyCode: evt.keyCode
             });
         };
