@@ -1,0 +1,53 @@
+name: Sync webUI to docs branch
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - 'webUI by jQuery/**'
+  workflow_dispatch:
+
+# 连续多次推送时排队执行，避免并发竞争 docs 分支
+concurrency:
+  group: sync-webui-to-docs
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 源：触发本次运行的 master 提交
+      - name: Checkout master (source)
+        uses: actions/checkout@v4
+        with:
+          path: source
+
+      # 目标：docs 分支（取完整历史，确保后面能推送）
+      - name: Checkout docs branch (destination)
+        uses: actions/checkout@v4
+        with:
+          ref: docs
+          path: dest
+          fetch-depth: 0
+
+      # 把 webUI by jQuery 下所有文件（含隐藏文件）复制到 docs 分支根目录
+      - name: Copy webUI by jQuery to docs root
+        run: cp -a "source/webUI by jQuery/." "dest/"
+
+      # 内容有变化才提交推送；纯复制语义，不删除 docs 分支上已有的其它文件
+      - name: Commit and push
+        working-directory: dest
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes, docs branch already up to date"
+            exit 0
+          fi
+          git commit -m "sync: webUI by jQuery from master @ $GITHUB_SHA"
+          git push origin HEAD:docs
